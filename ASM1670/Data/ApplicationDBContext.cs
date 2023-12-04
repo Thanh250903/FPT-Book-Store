@@ -4,10 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASM1670.Data
 {
-    public class ApplicationDBContext : IdentityDbContext
+    public class ApplicationDBContext : DbContext
     {
         public DbSet<Category> Categories { get; set; }
         public DbSet<Book> Books { get; set; }
+        
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
         {
 
@@ -15,6 +16,7 @@ namespace ASM1670.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 1, Name = "Horror", Description = "So scary", DisplayOrder = 2 },
                 new Category { Id = 2, Name = "Action", Description = "Hello", DisplayOrder = 3 },
