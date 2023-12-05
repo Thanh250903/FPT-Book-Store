@@ -1,5 +1,5 @@
 ﻿@model Category
-<h1>Create a category</h1>
+<h1>Edit a category</h1>
 <form method="post">
     <div class="border p-3 mt-4">
         <div class="mb-3 row">
@@ -17,7 +17,7 @@
             <input asp-for="DisplayOrder">
             <span asp-validation-for="DisplayOrder" class="text-danger"></span>
         </div>
-        <button type="submit" class="btn btn-primary">Create</button>
+        <button type="submit" class="btn btn-primary">Update</button>
         <a asp-controller="Category" asp-action="Index" class="btn btn-primary">Back to List</a>
     </div>
 </form>
