@@ -20,13 +20,74 @@ namespace ASM1670.Controllers
         {
             return View();
         }
-        [HttpPost]
+		public IActionResult Create()
+		{
+			return View();
+		}
+		[HttpPost]
         public IActionResult Create(Category category)
         {
-            _dbContext.Categories.Add(category);
-            _dbContext.SaveChanges();
-            return RedirectToAction("Index");
 
+            if (category.Name == category.Description)
+            {
+                ModelState.AddModelError("Description", "Name can not be equal to Description");
+            }
+            if (ModelState.IsValid)
+            {
+                _dbContext.Categories.Add(category);
+                _dbContext.SaveChanges();
+                TempData["success"] = "Category Created successfully";
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
+        public IActionResult Edit(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            Category? category = _dbContext.Categories.Find(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            return View(category);
+        }
+        [HttpPost]
+        public IActionResult Edit(Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                _dbContext.Categories.Update(category);
+                _dbContext.SaveChanges();
+                TempData["success"] = "Category Updated successfully";
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
+        public IActionResult Delete(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            Category? category = _dbContext.Categories.Find(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            return View(category);
+        }
+        [HttpPost]
+        public IActionResult Delete(Category category)
+        {
+            _dbContext.Categories.Remove(category);
+            _dbContext.SaveChanges();
+            TempData["success"] = "Category Deleted successfully";
+            return RedirectToAction("Index");
         }
     }
 }
+
+
