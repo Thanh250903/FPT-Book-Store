@@ -41,7 +41,7 @@ namespace ASM1670.Controllers
             }
             return View();
         }
-        public IActionResult Edit(int? id)
+        public IActionResult Update(int? id)
         {
             if (id == null || id == 0)
             {
@@ -55,7 +55,7 @@ namespace ASM1670.Controllers
             return View(category);
         }
         [HttpPost]
-        public IActionResult Edit(Category category)
+        public IActionResult Update(Category category)
         {
             if (ModelState.IsValid)
             {
