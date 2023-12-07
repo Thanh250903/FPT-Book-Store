@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ASM1670.Models.ViewModels
 {
-    public class Class
+    public class BookVM
     {
         public Book Book { get; set; }
         [ValidateNever]

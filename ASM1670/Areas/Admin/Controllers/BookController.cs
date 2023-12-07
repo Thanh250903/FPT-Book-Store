@@ -1,6 +1,7 @@
-﻿using ASM1670.Data;
-using ASM1670.Models;
-using Microsoft.AspNetCore.Hosting;
+﻿using ASM1670.Models;
+using ASM1670.Data;
+using ASM1670.Repository.IRepository;
+using ASM1670.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -9,41 +10,47 @@ namespace ASM1670.Areas.Admin.Controllers
     public class BookController : Controller
     {
         private readonly ApplicationDBContext _dbContext;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public BookController(ApplicationDBContext applicationDBContext, IWebHostEnvironment webHostEnvironment)
+        public BookController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, ApplicationDBContext dbContext)
         {
-            _dbContext = applicationDBContext;
+            _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
+            _dbContext = dbContext;
         }
         public IActionResult Index()
         {
-            List<Book> books = _dbContext.Books.ToList();
+            List<Book> books = _unitOfWork.BookRepository.GetAll("Category").ToList();
             return View(books);
-        }
-        public IActionResult Detail(int id)
-        {
-            var book = _dbContext.Books.Where(s => s.Id == id).FirstOrDefault();
-            return View(book);
         }
         public IActionResult CreateUpdate(int? id)
         {
-            Book book = new Book();
+            BookVM bookVM = new BookVM()
+            {
+                Categories = _unitOfWork.CategoryRepository.GetAll().Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.Id.ToString(),
+                }),
+                Book = new Book()
+            };
             if (id == null || id == 0)
             {
                 //Create
-                return View(book);
+                return View(bookVM);
             }
             else
             {
                 //Update
-                book = _dbContext.Books.Find(id);
-                return View(book);
+                bookVM.Book = _unitOfWork.BookRepository.Get(b => b.Id == id);
+                return View(bookVM);
             }
 
         }
         [HttpPost]
-        public IActionResult CreateUpdate(Book book, IFormFile? file)
+        public IActionResult CreateUpdate(BookVM bookVM, IFormFile? file)
         {
+
             if (ModelState.IsValid)
             {
                 string wwwRootPath = _webHostEnvironment.WebRootPath;
@@ -52,9 +59,9 @@ namespace ASM1670.Areas.Admin.Controllers
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                     string bookPath = Path.Combine(wwwRootPath, @"images\books");
 
-                    if (!String.IsNullOrEmpty(book.ImageUrl))
+                    if (!string.IsNullOrEmpty(bookVM.Book.ImageUrl))
                     {
-                        var oldImagePath = Path.Combine(wwwRootPath, book.ImageUrl.TrimStart('\\'));
+                        var oldImagePath = Path.Combine(wwwRootPath, bookVM.Book.ImageUrl.TrimStart('\\'));
                         if (System.IO.File.Exists(oldImagePath))
                         {
                             System.IO.File.Delete(oldImagePath);
@@ -64,27 +71,36 @@ namespace ASM1670.Areas.Admin.Controllers
                     {
                         file.CopyTo(fileStream);
                     }
-                    book.ImageUrl = @"\images\books\" + fileName;
+                    bookVM.Book.ImageUrl = @"\images\books\" + fileName;
                 }
-            }
-
-        if (ModelState.IsValid)
-            {
-                if (book.Id == 0)
+                if (bookVM.Book.Id == 0)
                 {
-                    _dbContext.Books.Add(book);
+                    _unitOfWork.BookRepository.Add(bookVM.Book);
                     TempData["success"] = "Book Created successfully";
                 }
                 else
                 {
-                    _dbContext.Books.Update(book);
+                    _unitOfWork.BookRepository.Update(bookVM.Book);
                     TempData["success"] = "Book Updated successfully";
                 }
 
-                _dbContext.SaveChanges();
+                _unitOfWork.Save();
                 return RedirectToAction("Index");
             }
-            return View();
+            else
+            {
+                BookVM bookVMNew = new BookVM()
+                {
+                    Categories = _unitOfWork.CategoryRepository.GetAll().Select(c => new SelectListItem
+                    {
+                        Text = c.Name,
+                        Value = c.Id.ToString(),
+                    }),
+                    Book = new Book()
+                };
+                return View(bookVMNew);
+            }
+
         }
         public IActionResult Delete(int? id)
         {
@@ -92,7 +108,7 @@ namespace ASM1670.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            Book? book = _dbContext.Books.Find(id);
+            Book? book = _unitOfWork.BookRepository.Get(b => b.Id == id);
             if (book == null)
             {
                 return NotFound();
@@ -102,10 +118,15 @@ namespace ASM1670.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Delete(Book book)
         {
-            _dbContext.Books.Remove(book);
-            _dbContext.SaveChanges();
+            _unitOfWork.BookRepository.Delete(book);
+            _unitOfWork.Save();
             TempData["success"] = "Book Deleted successfully";
             return RedirectToAction("Index");
+        }
+        public IActionResult Detail(int id)
+        {
+            Book? book = _unitOfWork.BookRepository.Get(b => b.Id == id);
+            return View(book);
         }
     }
 }

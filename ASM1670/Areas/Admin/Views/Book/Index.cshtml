@@ -13,8 +13,9 @@
                         <div class="card-body text-center">
                             <h5 class="card-title">@Book.Title</h5>
                             <p class="card-text">@Book.Description</p>
+                            <p class ="card-text">@Book.Category.Name</p>
                             <p class="card-text">@Book.Price VND</p>
-                            <a class="btn btn-primary" href="~/Book/Detail">Details</a>
+                            <a class="btn btn-primary" asp-controller="Book" asp-action="Detail"asp-route-id="@Book.Id" >Details</a>
                             <a href="#" class="btn btn-primary">Add to cart</a>
                             <a asp-controller="Book" asp-action="CreateUpdate" asp-route-id="@Book.Id" class="btn btn-primary">Edit</a>
                         </div>

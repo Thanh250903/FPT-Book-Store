@@ -16,7 +16,7 @@ namespace ASM1670.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-           
+
         }
     }
 }
