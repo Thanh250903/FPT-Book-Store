@@ -1,7 +1,7 @@
 ﻿@model List<Category>
 <partial name="_Notification" />
 <div class="row pt-4 pb-4">
-	<div class="col-10">
+	<div class="col-6">
 		<h2>List of Categories</h2>
 	</div>
 	<div class="col-6">
@@ -22,12 +22,11 @@
 			@foreach (var category in Model)
 			{
 				<tr>
-
 					<td>@category.Name</td>
 					<td>@category.Description</td>
 					<td>@category.DisplayOrder</td>
 					<td>
-						<a asp-controller="Category" asp-action="Update" asp-route-id="@category.Id" class="btn btn-primary">Update</a>
+						<a asp-controller="Category" asp-action="Edit" asp-route-id="@category.Id" class="btn btn-primary">Edit</a>
 						<a asp-controller="Category" asp-action="Delete" asp-route-id="@category.Id" class="btn btn-danger">Delete</a>
 					</td>
 				</tr>
