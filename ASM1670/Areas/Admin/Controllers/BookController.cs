@@ -137,5 +137,9 @@ namespace ASM1670.Areas.Admin.Controllers
             bookVM.Book = _unitOfWork.BookRepository.Get(b => b.Id == id);
             return View(bookVM);
         }
+        public IActionResult Cart()
+        {
+            return View();
+        }
     }
 }
