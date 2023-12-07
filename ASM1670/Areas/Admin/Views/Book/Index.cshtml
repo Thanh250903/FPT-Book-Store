@@ -1,0 +1,45 @@
+﻿@model List<Book>
+<partial name="_Notification" />
+
+<!-- Section-->
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center ">
+            @foreach (var Book in Model)
+            {
+                <form>
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="@Book.ImageUrl" alt="@Book.Title" />
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@Book.Title</h5>
+                            <p class="card-text">@Book.Description</p>
+                            <p class="card-text">@Book.Price VND</p>
+                            <a class="btn btn-primary" href="~/Book/Detail">Details</a>
+                            <a href="#" class="btn btn-primary">Add to cart</a>
+                            <a asp-controller="Book" asp-action="CreateUpdate" asp-route-id="@Book.Id" class="btn btn-primary">Edit</a>
+                        </div>
+                    </div>
+                </form>
+            }
+        </div>
+    </div>
+</section>
+<footer>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <a class="page-link">Previous</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
+    </nav>
+</footer>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="js/scripts.js"></script>

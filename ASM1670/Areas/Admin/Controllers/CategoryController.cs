@@ -2,7 +2,7 @@
 using ASM1670.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ASM1670.Controllers
+namespace ASM1670.Areas.Admin.Controllers
 {
     public class CategoryController : Controller
     {
@@ -20,11 +20,11 @@ namespace ASM1670.Controllers
         {
             return View();
         }
-		public IActionResult Create()
-		{
-			return View();
-		}
-		[HttpPost]
+        public IActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
         public IActionResult Create(Category category)
         {
 

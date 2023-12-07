@@ -2,7 +2,7 @@ using ASM1670.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace ASM1670.Controllers
+namespace ASM1670.Areas.User.Controllers
 {
     public class HomeController : Controller
     {
