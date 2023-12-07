@@ -1,6 +1,5 @@
 ﻿@model List<Book>
 <partial name="_Notification" />
-
 <!-- Section-->
 <section class="py-5">
     <div class="container px-4 px-lg-5 mt-5">
@@ -12,7 +11,7 @@
                         <img class="card-img-top" src="@Book.ImageUrl" alt="@Book.Title" />
                         <div class="card-body text-center">
                             <h5 class="card-title">@Book.Title</h5>
-                            <p class="card-text">@Book.Description</p>
+                            <p class="card-text" style="text-overflow: ellipsis;overflow: hidden;-webkit-line-clamp: 3;-webkit-box-orient: vertical; display: -webkit-box;">@Book.Description</p>
                             <p class="card-text">@Book.Category.Name</p>
                             <p class="card-text">@Book.Price VND</p>
                             <a class="btn btn-primary" asp-controller="Book" asp-action="Detail" asp-route-id="@Book.Id">Details</a>

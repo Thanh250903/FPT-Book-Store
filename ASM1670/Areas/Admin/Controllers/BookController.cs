@@ -125,8 +125,17 @@ namespace ASM1670.Areas.Admin.Controllers
         }
         public IActionResult Detail(int id)
         {
-            Book? book = _unitOfWork.BookRepository.Get(b => b.Id == id);
-            return View(book);
+            BookVM bookVM = new BookVM()
+            {
+                Categories = _unitOfWork.CategoryRepository.GetAll().Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.Id.ToString(),
+                }),
+                Book = new Book()
+            };
+            bookVM.Book = _unitOfWork.BookRepository.Get(b => b.Id == id);
+            return View(bookVM);
         }
     }
 }

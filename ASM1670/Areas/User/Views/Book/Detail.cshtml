@@ -1,53 +1,64 @@
-﻿@model ASM1670.Models.Book
+﻿@model BookVM
 
-@{
-    ViewData["Title"] = "Detail";
-}
+<div class="container">
 
-<h1>Detail</h1>
+    <!-- Portfolio Item Heading -->
+    <h1 class="my-4">
+        <small>@Model.Book.Title</small>
+    </h1>
 
-<div>
-    <h4>Book</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Author)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Author)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageUrl)
-        </dd>
-    </dl>
+    <!-- Portfolio Item Row -->
+    <div class="row">
+
+        <div class="col-md-8">
+            <img class="card-img-top" src="@Model.Book.ImageUrl" alt="@Model.Book.Title" style="width:100%" />
+        </div>
+
+        <div class="col-md-4">
+                @Model.Book.Description
+            <ul>
+                <li><b>Author: @Model.Book.Author</b></li>
+                <li><b>Price: @Model.Book.Price VND</b></li>
+                <li><b>Category: @Model.Book.Category.Name</b></li>
+            </ul>
+        </div>
+
+    </div>
+    <!-- /.row -->
+    <!-- Related Projects Row -->
+    <h3 class="my-4">Related Projects</h3>
+
+    <div class="row">
+
+        <div class="col-md-3 col-sm-6 mb-4">
+            <a href="#">
+                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
+            </a>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4">
+            <a href="#">
+                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
+            </a>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4">
+            <a href="#">
+                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
+            </a>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4">
+            <a href="#">
+                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
+            </a>
+        </div>
+        <div>
+            <a class="btn btn-primary me-md-2 position-relative bottom-0 end-0" asp-action="Index">Back to List</a>
+        </div>
+    </div>
+    <!-- /.row -->
+
 </div>
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<!-- /.container -->
+
