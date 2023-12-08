@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace ASM1670.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class BookController : Controller
     {
         private readonly ApplicationDBContext _dbContext;
