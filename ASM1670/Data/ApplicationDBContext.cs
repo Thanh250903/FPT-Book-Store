@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASM1670.Data
 {
-    public class ApplicationDBContext : DbContext
+    public class ApplicationDBContext : IdentityDbContext
     {
         public DbSet<Category> Categories { get; set; }
         public DbSet<Book> Books { get; set; }
@@ -16,7 +16,10 @@ namespace ASM1670.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Category>().HasData(
+                new Category { Id = 4, Name = "Science", Description = "So difficult", DisplayOrder = 4 }
+            );
         }
     }
 }

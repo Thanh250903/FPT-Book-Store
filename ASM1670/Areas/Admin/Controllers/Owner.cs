@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ASM1670.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class Owner : Controller
     {
         // GET: Owner
