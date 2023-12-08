@@ -8,7 +8,7 @@ namespace ASM1670.Data
     {
         public DbSet<Category> Categories { get; set; }
         public DbSet<Book> Books { get; set; }
-        
+        //public DbSet<ApplicationUser> applicationUsers {  get; set; } 
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
         {
 
