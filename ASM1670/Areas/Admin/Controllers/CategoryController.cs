@@ -1,10 +1,12 @@
 ﻿using ASM1670.Data;
 using ASM1670.Models;
 using Microsoft.AspNetCore.Mvc;
-
+using ASM1670.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 namespace ASM1670.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {
         private readonly ApplicationDBContext _dbContext;

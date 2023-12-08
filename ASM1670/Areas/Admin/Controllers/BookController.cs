@@ -2,12 +2,14 @@
 using ASM1670.Data;
 using ASM1670.Repository.IRepository;
 using ASM1670.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ASM1670.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class BookController : Controller
     {
         private readonly ApplicationDBContext _dbContext;
