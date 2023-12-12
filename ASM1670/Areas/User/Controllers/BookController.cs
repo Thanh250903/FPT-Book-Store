@@ -11,7 +11,7 @@ namespace ASM1670.Areas.User.Controllers
     public class BookController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public BookController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, ApplicationDBContext dbContext)
+        public BookController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
         }
@@ -33,10 +33,6 @@ namespace ASM1670.Areas.User.Controllers
             };
             bookVM.Book = _unitOfWork.BookRepository.Get(b => b.Id == id);
             return View(bookVM);
-        }
-        public IActionResult Cart()
-        {
-            return View();
         }
     }
 }

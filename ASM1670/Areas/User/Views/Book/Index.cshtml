@@ -1,4 +1,4 @@
-﻿@model List<Book>
+﻿@model List<ASM1670.Models.Book>
 <partial name="_Notification" />
 <!-- Section-->
 <section class="py-5">
@@ -16,7 +16,8 @@
                                     <h5 class="card-title">@Book.Title</h5>
                                     <p class="card-text" style="text-overflow: ellipsis;overflow: hidden;-webkit-line-clamp: 3;-webkit-box-orient: vertical; display: -webkit-box;">@Book.Description</p>
                                 <a class="btn btn-primary" asp-controller="Book" asp-action="Detail" asp-route-id="@Book.Id">Details</a>
-                                <a href="#" class="btn btn-primary">Add to cart</a>
+                                <a asp-area="User" asp-controller="Cart" asp-action="addcart" asp-route-id="@Book.Id"
+                                   class="btn btn-secondary btn-sm float-right">Đặt hàng</a>
                                 </div>
                             </div>
                         </div>
