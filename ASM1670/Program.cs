@@ -1,4 +1,4 @@
-using ASM1670.Data;
+﻿using ASM1670.Data;
 using ASM1670.Repository.IRepository;
 using ASM1670.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +17,11 @@ builder.Services.AddIdentity<IdentityUser,IdentityRole>(options => options.SignI
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();   
 builder.Services.AddRazorPages();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(cfg => {                   
+    cfg.Cookie.Name = "ASM1670";            
+    cfg.IdleTimeout = new TimeSpan(0, 30, 0);  
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -29,7 +34,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseSession();
 app.UseRouting();
 
 app.UseAuthorization();
