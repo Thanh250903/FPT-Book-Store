@@ -4,10 +4,12 @@ using ASM1670.Repository.IRepository;
 using ASM1670.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ASM1670.Areas.User.Controllers
 {
     [Area("User")]
+    [Authorize(Roles = "User")]
     public class BookController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

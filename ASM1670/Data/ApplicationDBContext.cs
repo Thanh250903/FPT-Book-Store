@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using ASM1670.Models;
+﻿using ASM1670.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASM1670.Data
@@ -8,7 +9,6 @@ namespace ASM1670.Data
     {
         public DbSet<Category> Categories { get; set; }
         public DbSet<Book> Books { get; set; }
-        //public DbSet<ApplicationUser> applicationUsers {  get; set; } 
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
         {
 
@@ -17,9 +17,14 @@ namespace ASM1670.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Category>().HasData(
-                new Category { Id = 4, Name = "Science", Description = "So difficult", DisplayOrder = 4 }
-            );
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                var tableName = entityType.GetTableName();
+                if (tableName.StartsWith("AspNet"))
+                {
+                    entityType.SetTableName(tableName.Substring(6));
+                }
+            }
         }
     }
 }
