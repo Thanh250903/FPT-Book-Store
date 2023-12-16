@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using ASM1670.Models;
+﻿using ASM1670.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 
 namespace ASM1670.Data
 {
@@ -34,7 +33,6 @@ namespace ASM1670.Data
             //sau đó vào SQL tạo querry mới rồi gõ DELETE FORM UserRoles where User = '..' sau đó chạy
             //tiếp theo gõ INSERT INTO UserRoles Values('cái id của user','cái id của role Admin') sau đó chạy 
             //rồi logout rồi login lại là xong
-
         }
     }
 }
