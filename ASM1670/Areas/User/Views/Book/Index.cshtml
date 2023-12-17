@@ -1,6 +1,9 @@
-﻿@model List<ASM1670.Models.Book>
+﻿@model X.PagedList.IPagedList<ASM1670.Models.Book>
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common
 <partial name="_Notification" />
 <!-- Section-->
+
 <section class="py-5">
     <div class="container px-4 px-lg-5 mt-5">
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center ">
@@ -40,6 +43,14 @@
             </li> 
         </ul>
     </nav> *@
+    <br />
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+    @Html.PagedListPager(Model, page => Url.Action("Index", new
+        {
+            page,
+            searchString = ViewBag.Keyword
+        }),
+            PagedListRenderOptions.PageNumbersOnly)
 </footer>
 <!-- Bootstrap core JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

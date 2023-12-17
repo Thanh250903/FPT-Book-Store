@@ -5,6 +5,7 @@ using ASM1670.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using X.PagedList;
 
 namespace ASM1670.Areas.User.Controllers
 {
@@ -18,12 +19,7 @@ namespace ASM1670.Areas.User.Controllers
             _unitOfWork = unitOfWork;
             _dbContext = dbContext;
         }
-        //public IActionResult Index()
-        //{
-        //    List<Book> books = _unitOfWork.BookRepository.GetAll("Category").ToList();
-        //    return View(books);
-        //}
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string currentFilter,string searchString, int? page)
         {
             if (_dbContext.Books == null)
             {
@@ -37,8 +33,17 @@ namespace ASM1670.Areas.User.Controllers
             {
                 movies = movies.Where(s => s.Title!.Contains(searchString));
             }
-
-            return View(await movies.ToListAsync());
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            int pageSize = 4;
+            int pageNumber = (page ?? 1);
+            return View(movies.ToPagedList(pageNumber, pageSize));
         }
         public IActionResult Detail(int id)
         {
