@@ -4,6 +4,7 @@ using ASM1670.Repository.IRepository;
 using ASM1670.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASM1670.Areas.User.Controllers
 {
@@ -11,14 +12,33 @@ namespace ASM1670.Areas.User.Controllers
     public class BookController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public BookController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
+        private readonly ApplicationDBContext _dbContext;
+        public BookController(IUnitOfWork unitOfWork, ApplicationDBContext dbContext)
         {
             _unitOfWork = unitOfWork;
+            _dbContext = dbContext;
         }
-        public IActionResult Index()
+        //public IActionResult Index()
+        //{
+        //    List<Book> books = _unitOfWork.BookRepository.GetAll("Category").ToList();
+        //    return View(books);
+        //}
+        public async Task<IActionResult> Index(string searchString)
         {
-            List<Book> books = _unitOfWork.BookRepository.GetAll("Category").ToList();
-            return View(books);
+            if (_dbContext.Books == null)
+            {
+                return Problem("Entity set 'MvcMovieContext.Movie'  is null.");
+            }
+
+            var movies = from m in _dbContext.Books
+                         select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                movies = movies.Where(s => s.Title!.Contains(searchString));
+            }
+
+            return View(await movies.ToListAsync());
         }
         public IActionResult Detail(int id)
         {
