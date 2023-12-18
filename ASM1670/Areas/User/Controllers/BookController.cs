@@ -116,8 +116,9 @@ namespace ASM1670.Areas.User.Controllers
 
         public IActionResult CheckOut()
         {
+            ClearCart();
             // Xử lý khi đặt hàng
-            return View();
+            return RedirectToAction(nameof(Index));
         }
 
 
