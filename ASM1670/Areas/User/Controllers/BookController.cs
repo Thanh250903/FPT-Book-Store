@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using X.PagedList;
 using Newtonsoft.Json;
 using Microsoft.CodeAnalysis;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Build.Evaluation;
 
 namespace ASM1670.Areas.User.Controllers
 {
@@ -69,7 +71,8 @@ namespace ASM1670.Areas.User.Controllers
                             .FirstOrDefault();
             if (product == null)
                 return NotFound("Không có sản phẩm");
-
+            var user = User.Identity.Name;
+            var now = DateTime.UtcNow;
             var cart = GetCartItems();
             var cartitem = cart.Find(p => p.book.Id == id);
             if (cartitem != null)
@@ -81,9 +84,11 @@ namespace ASM1670.Areas.User.Controllers
             {
                 //  Thêm mới
                 cart.Add(new CartItem() { Quantity = 1, book = product });
+                
             }
-
+            var cartitems = _dbContext.Cart.Add(new Cart() { Quantity = 1, book = product, UnitPrice = product.Price,AddedTime = now,AddedByUserEmail = user,Title = product.Title });
             // Lưu cart vào Session
+            _dbContext.SaveChanges();
             SaveCartSession(cart);
             return RedirectToAction(nameof(Cart));
         }
@@ -106,7 +111,6 @@ namespace ASM1670.Areas.User.Controllers
             {
                 cart.Remove(cartitem);
             }
-
             SaveCartSession(cart);
             return RedirectToAction(nameof(Cart));
         }
