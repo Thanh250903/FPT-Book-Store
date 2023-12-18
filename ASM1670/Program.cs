@@ -22,6 +22,7 @@ builder.Services.AddSession(cfg => {
     cfg.Cookie.Name = "ASM1670";            
     cfg.IdleTimeout = new TimeSpan(0, 30, 0);  
 });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
