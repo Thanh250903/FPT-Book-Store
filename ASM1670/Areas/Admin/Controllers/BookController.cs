@@ -5,144 +5,144 @@ using ASM1670.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ASM1670.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Owner")]
     public class BookController : Controller
     {
         private readonly ApplicationDBContext _dbContext;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public BookController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, ApplicationDBContext dbContext)
+        public BookController(IWebHostEnvironment webHostEnvironment, ApplicationDBContext dbContext)
         {
-            _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
             _dbContext = dbContext;
         }
+        [HttpGet]
         public IActionResult Index()
         {
-            List<Book> books = _unitOfWork.BookRepository.GetAll("Category").ToList();
+            // lay id cua user
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var currentUserId = claim.Value;
+
+            var books = _dbContext.Books
+                .Where(x => x.CreateBy == currentUserId)
+                .Include(x => x.Category).ToList();
             return View(books);
         }
-        public IActionResult CreateUpdate(int? id)
+        [HttpGet]
+        public IActionResult Delete(int id)
         {
-            BookVM bookVM = new BookVM()
-            {
-                Categories = _unitOfWork.CategoryRepository.GetAll().Select(c => new SelectListItem
-                {
-                    Text = c.Name,
-                    Value = c.Id.ToString(),
-                }),
-                Book = new Book()
-            };
-            if (id == null || id == 0)
-            {
-                //Create
-                return View(bookVM);
-            }
-            else
-            {
-                //Update
-                bookVM.Book = _unitOfWork.BookRepository.Get(b => b.Id == id);
-                return View(bookVM);
-            }
+            var objBook = _dbContext.Books.Find(id);
+            _dbContext.Books.Remove(objBook);
+            _dbContext.SaveChanges();
 
+            TempData["DeleteBoMessage"] = "Deleted Book Successfully!";
+            TempData["ShowMessage"] = true;
+            return RedirectToAction(nameof(Index));
+        }
+        [HttpGet]
+        public IActionResult Upsert(int? id)
+        {
+            var bookVm = new BookVM();
+
+            bookVm.Categories = CategorySelectListItems();
+
+
+            if (id == null)
+            {
+                bookVm.Book = new Book();
+                return View(bookVm);
+            }
+            var book = _dbContext.Books.Find(id);
+            bookVm.Book = book;
+            return View(bookVm);
         }
         [HttpPost]
-        public IActionResult CreateUpdate(BookVM bookVM, IFormFile? file)
+        public IActionResult Upsert(BookVM bookVm)
         {
-
             if (ModelState.IsValid)
             {
-                string wwwRootPath = _webHostEnvironment.WebRootPath;
-                if (file != null)
-                {
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    string bookPath = Path.Combine(wwwRootPath, @"images\books");
+                bookVm.Categories = CategorySelectListItems();
 
-                    if (!string.IsNullOrEmpty(bookVM.Book.ImageUrl))
-                    {
-                        var oldImagePath = Path.Combine(wwwRootPath, bookVM.Book.ImageUrl.TrimStart('\\'));
-                        if (System.IO.File.Exists(oldImagePath))
-                        {
-                            System.IO.File.Delete(oldImagePath);
-                        }
-                    }
-                    using (var fileStream = new FileStream(Path.Combine(bookPath, fileName), FileMode.Create))
-                    {
-                        file.CopyTo(fileStream);
-                    }
-                    bookVM.Book.ImageUrl = @"\images\books\" + fileName;
-                }
-                if (bookVM.Book.Id == 0)
+                return View(bookVm);
+            }
+
+            var webRootPath = _webHostEnvironment.WebRootPath;
+            var files = HttpContext.Request.Form.Files;
+            if (files.Count > 0)
+            {
+                var fileName = Guid.NewGuid();
+                var uploads = Path.Combine(webRootPath, @"images/books/");
+                var extension = Path.GetExtension(files[0].FileName);
+                if (bookVm.Book.Id != 0)
                 {
-                    _unitOfWork.BookRepository.Add(bookVM.Book);
-                    TempData["success"] = "Book Created successfully";
-                }
-                else
-                {
-                    _unitOfWork.BookRepository.Update(bookVM.Book);
-                    TempData["success"] = "Book Updated successfully";
+                    var productDb = _dbContext.Books.AsNoTracking()
+                        .Where(b => b.Id == bookVm.Book.Id).First();
+                    if (productDb.ImageUrl != null && bookVm.Book.Id != 0)
+                    {
+                        var imagePath = Path.Combine(webRootPath, productDb.ImageUrl.TrimStart('/'));
+                        if (System.IO.File.Exists(imagePath)) System.IO.File.Delete(imagePath);
+                    }
                 }
 
-                _unitOfWork.Save();
-                return RedirectToAction("Index");
+                using (var filesStreams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
+                {
+                    files[0].CopyTo(filesStreams);
+                }
+
+                bookVm.Book.ImageUrl = @"/images/books/"+ fileName + extension;
+            }
+
+            else
+            {
+                bookVm.Categories = CategorySelectListItems();
+                return View(bookVm);
+            }
+
+
+            if (bookVm.Book.Id == 0 || bookVm.Book.Id == null)
+            {
+                // lay id cua user
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                var currentUserId = claim.Value;
+                bookVm.Book.CreateBy = currentUserId;
+
+                _dbContext.Books.Add(bookVm.Book);
             }
             else
             {
-                BookVM bookVMNew = new BookVM()
-                {
-                    Categories = _unitOfWork.CategoryRepository.GetAll().Select(c => new SelectListItem
-                    {
-                        Text = c.Name,
-                        Value = c.Id.ToString(),
-                    }),
-                    Book = new Book()
-                };
-                return View(bookVMNew);
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                var currentUserId = claim.Value;
+                bookVm.Book.CreateBy = currentUserId;
+                _dbContext.Books.Update(bookVm.Book);
             }
+            _dbContext.SaveChanges();
+            TempData["CreateBoMessage"] = "Created Book sSuccessfully!";
+            TempData["ShowMessage"] = true;
+            return RedirectToAction(nameof(Index));
+        }
+        private IEnumerable<SelectListItem> CategorySelectListItems()
+        {
+            var categories = _dbContext.Categories
+                .Where(c => c.Status == Category.StatusCategory.Approve)
+                .ToList();
 
-        }
-        public IActionResult Delete(int? id)
-        {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-            Book? book = _unitOfWork.BookRepository.Get(b => b.Id == id);
-            if (book == null)
-            {
-                return NotFound();
-            }
-            return View(book);
-        }
-        [HttpPost]
-        public IActionResult Delete(Book book)
-        {
-            _unitOfWork.BookRepository.Delete(book);
-            _unitOfWork.Save();
-            TempData["success"] = "Book Deleted successfully";
-            return RedirectToAction("Index");
-        }
-        public IActionResult Detail(int id)
-        {
-            BookVM bookVM = new BookVM()
-            {
-                Categories = _unitOfWork.CategoryRepository.GetAll().Select(c => new SelectListItem
+            var result = categories
+                .Select(c => new SelectListItem
                 {
                     Text = c.Name,
-                    Value = c.Id.ToString(),
-                }),
-                Book = new Book()
-            };
-            bookVM.Book = _unitOfWork.BookRepository.Get(b => b.Id == id);
-            return View(bookVM);
+                    Value = c.Id.ToString()
+                });
+
+            return result;
         }
-        public IActionResult Cart()
-        {
-            return View();
-        }
+
     }
 }
