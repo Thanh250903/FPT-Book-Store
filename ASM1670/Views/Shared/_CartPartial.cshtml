@@ -1,0 +1,16 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@inject IHttpContextAccessor HttpContextAccessor
+
+
+@{
+    var session = HttpContextAccessor.HttpContext.Session;
+    string jsoncart = session.GetString(ASM1670.Areas.User.Controllers.BookController.CARTKEY);
+    if (jsoncart != null)
+    {
+        var cart = JsonConvert.DeserializeObject<List<CartItem>>(jsoncart);
+        <i class="bi bi-cart"></i>
+        <div class="nav-item"><a class="badge text-black-50" asp-action="Cart">Cart(@cart.Count)</a></div>
+
+    }
+}

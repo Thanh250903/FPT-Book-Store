@@ -1,156 +1,94 @@
 ﻿using ASM1670.Data;
 using ASM1670.Models;
 using Microsoft.AspNetCore.Mvc;
+using ASM1670.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 namespace ASM1670.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Owner")]
-
+    [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {
-        private readonly ApplicationDBContext _context;
-
-        public CategoryController(ApplicationDBContext context)
+        private readonly ApplicationDBContext _dbContext;
+        public CategoryController(ApplicationDBContext applicationDBContext)
         {
-            _context = context;
+            _dbContext = applicationDBContext;
         }
-
-        // GET: Categories
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Categories.Where(x => x.Status == Category.StatusCategory.Approve).ToListAsync());
+            List<Category> categories = _dbContext.Categories.ToList();
+            return View(categories);
         }
-
-        // GET: Categories/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            return View(category);
+            return View();
         }
-
-        // GET: Categories/Create
         public IActionResult Create()
         {
             return View();
         }
-
-        // POST: Categories/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description")] Category category)
+        public IActionResult Create(Category category)
         {
+
+            if (category.Name == category.Description)
+            {
+                ModelState.AddModelError("Description", "Name can not be equal to Description");
+            }
             if (ModelState.IsValid)
             {
-                // set new category to pending (default after create by customer
-                category.Status = Category.StatusCategory.Pending;
-
-                _context.Add(category);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Send Request for Admin Approve Category successfully!";
-                TempData["ShowMessage"] = true; //Set flag to show message in the view
-                return RedirectToAction(nameof(Index));
+                _dbContext.Categories.Add(category);
+                _dbContext.SaveChanges();
+                TempData["success"] = "Category Created successfully";
+                return RedirectToAction("Index");
             }
-            return View(category);
+            return View();
         }
-
-        // GET: Categories/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
-            if (id == null)
+            if (id == null || id == 0)
             {
                 return NotFound();
             }
-
-            var category = await _context.Categories.FindAsync(id);
+            Category? category = _dbContext.Categories.Find(id);
             if (category == null)
             {
                 return NotFound();
             }
             return View(category);
         }
-
-        // POST: Categories/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Category category)
+        public IActionResult Edit(Category category)
         {
-            if (id != category.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CategoryExists(category.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                TempData["EditCateMessage"] = "Edited Category!";
-                TempData["ShowMessage"] = true; //Set flag to show message in the view
-                return RedirectToAction(nameof(Index));
+                _dbContext.Categories.Update(category);
+                _dbContext.SaveChanges();
+                TempData["success"] = "Category Updated successfully";
+                return RedirectToAction("Index");
             }
-            return View(category);
+            return View();
         }
-
-        // GET: Categories/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
-            if (id == null)
+            if (id == null || id == 0)
             {
                 return NotFound();
             }
-
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+            Category? category = _dbContext.Categories.Find(id);
             if (category == null)
             {
                 return NotFound();
             }
-
             return View(category);
         }
-
-        // POST: Categories/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public IActionResult Delete(Category category)
         {
-            var category = await _context.Categories.FindAsync(id);
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
-            TempData["DeleteCateMessage"] = "Deleted Category!";
-            TempData["ShowMessage"] = true; //Set flag to show message in the view
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool CategoryExists(int id)
-        {
-            return _context.Categories.Any(e => e.Id == id);
+            _dbContext.Categories.Remove(category);
+            _dbContext.SaveChanges();
+            TempData["success"] = "Category Deleted successfully";
+            return RedirectToAction("Index");
         }
     }
 }

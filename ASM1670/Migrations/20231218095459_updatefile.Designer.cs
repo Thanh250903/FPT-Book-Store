@@ -4,6 +4,7 @@ using ASM1670.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASM1670.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231218095459_updatefile")]
+    partial class updatefile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,7 +58,7 @@ namespace ASM1670.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("ASM1670.Models.Cart", b =>
+            modelBuilder.Entity("ASM1670.Models.CartItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -63,22 +66,8 @@ namespace ASM1670.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AddedByUserEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("AddedTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("UnitPrice")
-                        .HasColumnType("float");
 
                     b.Property<int>("bookId")
                         .HasColumnType("int");
@@ -87,7 +76,7 @@ namespace ASM1670.Migrations
 
                     b.HasIndex("bookId");
 
-                    b.ToTable("Cart");
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("ASM1670.Models.Category", b =>
@@ -323,7 +312,7 @@ namespace ASM1670.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("ASM1670.Models.Cart", b =>
+            modelBuilder.Entity("ASM1670.Models.CartItem", b =>
                 {
                     b.HasOne("ASM1670.Models.Book", "book")
                         .WithMany()

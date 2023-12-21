@@ -4,6 +4,7 @@ using ASM1670.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASM1670.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231216072211_abc")]
+    partial class abc
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,6 +45,9 @@ namespace ASM1670.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("OrderDetailId")
+                        .HasColumnType("int");
+
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
@@ -52,10 +58,12 @@ namespace ASM1670.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("OrderDetailId");
+
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("ASM1670.Models.Cart", b =>
+            modelBuilder.Entity("ASM1670.Models.CartItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -63,22 +71,8 @@ namespace ASM1670.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AddedByUserEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("AddedTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("UnitPrice")
-                        .HasColumnType("float");
 
                     b.Property<int>("bookId")
                         .HasColumnType("int");
@@ -87,7 +81,7 @@ namespace ASM1670.Migrations
 
                     b.HasIndex("bookId");
 
-                    b.ToTable("Cart");
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("ASM1670.Models.Category", b =>
@@ -112,6 +106,101 @@ namespace ASM1670.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("ASM1670.Models.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Mail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PhoneNumber")
+                        .HasMaxLength(10)
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("ASM1670.Models.OrderDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("OrderShipId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderShipId");
+
+                    b.ToTable("OrderDetails");
+                });
+
+            modelBuilder.Entity("ASM1670.Models.OrderShip", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PhoneNumber")
+                        .HasMaxLength(10)
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrderShips");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -312,6 +401,21 @@ namespace ASM1670.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("OrderOrderDetail", b =>
+                {
+                    b.Property<int>("OrderDetailsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrdersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderDetailsId", "OrdersId");
+
+                    b.HasIndex("OrdersId");
+
+                    b.ToTable("OrderOrderDetail");
+                });
+
             modelBuilder.Entity("ASM1670.Models.Book", b =>
                 {
                     b.HasOne("ASM1670.Models.Category", "Category")
@@ -320,10 +424,14 @@ namespace ASM1670.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ASM1670.Models.OrderDetail", null)
+                        .WithMany("Books")
+                        .HasForeignKey("OrderDetailId");
+
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("ASM1670.Models.Cart", b =>
+            modelBuilder.Entity("ASM1670.Models.CartItem", b =>
                 {
                     b.HasOne("ASM1670.Models.Book", "book")
                         .WithMany()
@@ -332,6 +440,22 @@ namespace ASM1670.Migrations
                         .IsRequired();
 
                     b.Navigation("book");
+                });
+
+            modelBuilder.Entity("ASM1670.Models.Order", b =>
+                {
+                    b.HasOne("ASM1670.Models.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId");
+
+                    b.Navigation("Book");
+                });
+
+            modelBuilder.Entity("ASM1670.Models.OrderDetail", b =>
+                {
+                    b.HasOne("ASM1670.Models.OrderShip", null)
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("OrderShipId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -383,6 +507,31 @@ namespace ASM1670.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("OrderOrderDetail", b =>
+                {
+                    b.HasOne("ASM1670.Models.OrderDetail", null)
+                        .WithMany()
+                        .HasForeignKey("OrderDetailsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ASM1670.Models.Order", null)
+                        .WithMany()
+                        .HasForeignKey("OrdersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ASM1670.Models.OrderDetail", b =>
+                {
+                    b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("ASM1670.Models.OrderShip", b =>
+                {
+                    b.Navigation("OrderDetails");
                 });
 #pragma warning restore 612, 618
         }

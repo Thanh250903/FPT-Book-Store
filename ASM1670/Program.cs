@@ -1,45 +1,32 @@
 ﻿using ASM1670.Data;
+using ASM1670.Repository.IRepository;
+using ASM1670.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using ASM1670.Utility;
-using ASM1670.AutoCreateRole;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-var connectionString = builder.Configuration.GetConnectionString("KhanhConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDBContext>(options =>
-    options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDBContext>();
-builder.Services.AddScoped<IAutoCreateRole, AutoCreateRole>();
-builder.Services.AddOptions();
+builder.Services.AddIdentity<IdentityUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<ApplicationDBContext>().AddDefaultTokenProviders();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();   
 builder.Services.AddRazorPages();
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.LoginPath = "/Identity/Account/Login";
-    options.LogoutPath = "/Identity/Account/Logout";
-    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(cfg => {                   
+    cfg.Cookie.Name = "ASM1670";            
+    cfg.IdleTimeout = new TimeSpan(0, 30, 0);  
 });
-
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(30); //The time cookie available
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
-
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
-    var dbCreate = scope.ServiceProvider.GetRequiredService<IAutoCreateRole>();
-    dbCreate.CreateRole();
+    await DbSeeder.SeedDefaultData(scope.ServiceProvider);
 }
 
 
@@ -60,6 +47,6 @@ app.UseAuthorization();
 app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
+    pattern: "{area=User}/{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

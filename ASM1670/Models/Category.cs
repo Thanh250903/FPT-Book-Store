@@ -1,24 +1,25 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
-namespace ASM1670.Models;
-
-public class Category
+namespace ASM1670.Models
 {
-    [Key]
-    public int Id { get; set; }
-    [Required]
-    public string  Name { get; set; }
-    [Required]
-    public string Description { get; set; }
-
-    public enum StatusCategory
+    public class Category
     {
-        Approve,
-        Reject,
-        Pending
-    }
-    
-    [Required]
-    public StatusCategory Status { get; set; }
+        [Key]
+        public int Id { get; set; }
+        [Required]
+        public string Name { get; set; }
+        [Required]
+        public string Description { get; set; }
 
+        public enum StatusCategory
+        {
+            Approve,
+            Reject,
+            Pending
+        }
+
+        [Required]
+        public StatusCategory Status { get; set; }
+    }
 }

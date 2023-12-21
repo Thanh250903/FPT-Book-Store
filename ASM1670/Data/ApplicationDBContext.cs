@@ -6,12 +6,9 @@ namespace ASM1670.Data
 {
     public class ApplicationDBContext : IdentityDbContext
     {
-        public DbSet<Book> Books { get; set; }
-        public DbSet<Cart> Carts { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderDetail> OrderDetails { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<Book> Books { get; set; }
+        public DbSet<Cart> Cart{ get; set; }
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
         {
 
@@ -28,7 +25,6 @@ namespace ASM1670.Data
                     entityType.SetTableName(tableName.Substring(6));
                 }
             }
-
             //Anh em vui lòng đọc hướng dẫn tạo account Admin
             //create a new account
             //sau đó vào SQL tạo querry mới rồi gõ DELETE FORM UserRoles where User = '..' sau đó chạy
