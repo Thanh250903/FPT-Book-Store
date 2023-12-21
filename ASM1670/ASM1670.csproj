@@ -14,8 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ExcelDataReader" Version="3.6.0" />
-    <PackageReference Include="MailKit" Version="4.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.0" />
@@ -35,33 +33,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Areas\Admin\Views\Book\Index.cshtml" />
-    <None Include="Areas\Admin\Views\Book\CreateUpdate.cshtml" />
-    <None Include="Areas\Admin\Views\Carts\Index.cshtml" />
-    <None Include="Areas\Admin\Views\Carts\OrderConfirmation.cshtml" />
-    <None Include="Areas\Admin\Views\Carts\Summary.cshtml" />
-    <None Include="Areas\Admin\Views\Category\Create.cshtml" />
-    <None Include="Areas\Admin\Views\Category\Delete.cshtml" />
-    <None Include="Areas\Admin\Views\Category\Details.cshtml" />
-    <None Include="Areas\Admin\Views\Category\Edit.cshtml" />
-    <None Include="Areas\Admin\Views\Category\Index.cshtml" />
-    <None Include="Areas\Admin\Views\Management\Detail.cshtml" />
-    <None Include="Areas\Admin\Views\Management\Index.cshtml" />
-    <None Include="Areas\Admin\Views\User\ConfirmEmail.cshtml" />
-    <None Include="Areas\Admin\Views\User\EditUser.cshtml" />
-    <None Include="Areas\Admin\Views\User\Index.cshtml" />
-    <None Include="Areas\Admin\Views\User\Requests.cshtml" />
-    <None Include="Areas\Admin\Views\User\ResetPassword.cshtml" />
-    <None Include="Areas\Customer\Views\Home\Details.cshtml" />
-    <None Include="Areas\Customer\Views\Home\HelpScreen.cshtml" />
-    <None Include="Areas\Customer\Views\Home\Index.cshtml" />
-    <None Include="Areas\Customer\Views\Home\Privacy.cshtml" />
-    <None Include="wwwroot\vendor\jquery\jquery-ui.min.js" />
-    <None Include="wwwroot\vendor\jquery\jquery.min.js" />
+    <Folder Include="wwwroot\images\books\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\books\" />
+    <None Include="wwwroot\vendor\jquery\jquery-ui.min.js" />
+    <None Include="wwwroot\vendor\jquery\jquery.min.js" />
   </ItemGroup>
 
 </Project>

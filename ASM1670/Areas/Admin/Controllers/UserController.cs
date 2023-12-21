@@ -7,10 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using ASM1670.Data;
 using ASM1670.Models;
 using ASM1670.Models.ViewModels;
-using System.ComponentModel.DataAnnotations;
-using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
-using Microsoft.AspNetCore.WebUtilities;
-using System.Text;
 
 namespace ASM1670.Areas.Admin.Controllers
 {
@@ -21,7 +17,6 @@ namespace ASM1670.Areas.Admin.Controllers
         private readonly ApplicationDBContext _db;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManger;
-        private readonly ResetPasswordVM _resetPasswordVM;
 
         public UserController(ApplicationDBContext db, UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager)
@@ -60,6 +55,38 @@ namespace ASM1670.Areas.Admin.Controllers
             TempData["DeleteUserMessage"] = "User Deleted!";
             TempData["ShowMessage"] = true;
             return RedirectToAction(nameof(Index));
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> ResetPassword(string token, string email)
+        {
+            if (token == null || email == null) ModelState.AddModelError("", "Invalid password reset token");
+
+            var resetPasswordViewModel = new ResetPasswordVM()
+            {
+                Email = email,
+                Token = token
+            };
+
+            return View(resetPasswordViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordVM resetPasswordViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(resetPasswordViewModel.Email);
+                if (user != null)
+                {
+                    var result = await _userManager.ResetPasswordAsync(user, resetPasswordViewModel.Token,
+                        resetPasswordViewModel.Password);
+                    if (result.Succeeded) return RedirectToAction(nameof(Index));
+                }
+            }
+
+            return View(resetPasswordViewModel);
         }
 
 
@@ -146,49 +173,6 @@ namespace ASM1670.Areas.Admin.Controllers
             TempData["ShowMessage"] = true;
 
             return RedirectToAction("Requests");
-        }
-
-        public IActionResult ResetPassword(string id)
-        {
-            var user = _db.Users.Find(id);
-            ResetPasswordVM model = new ResetPasswordVM()
-            {
-                Email = user.Email,
-                Password = user.PasswordHash,
-                ConfirmPassword = user.PasswordHash
-            };
-            return View(model);
-        }
-        [HttpPost]
-        public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
-        {
-            var email = Request.Form["email"];
-            var password = Request.Form["password"];
-            var user = await _userManager.FindByEmailAsync(email);
-            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-
-            if (user == null)
-                return NotFound();
-            var result = await _userManager.ResetPasswordAsync(user, code, password);
-            if (result.Succeeded)
-            {
-                TempData["success"] = $"Password reset successfully! for (Email:  {user.Email})";
-                return RedirectToAction("Index");
-            }
-            //error
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error.Description);
-            }
-            model = new ResetPasswordVM()
-            {
-                Email = user.Email,
-                Password = user.PasswordHash,
-                ConfirmPassword = user.PasswordHash,
-                Token = user.Id
-            };
-            TempData["error"] = "Something wrong!";
-            return View(model);
         }
 
     }

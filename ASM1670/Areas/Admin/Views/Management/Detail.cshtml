@@ -6,7 +6,7 @@
 }
 
 <div class="card shadow mb-4">
-    <partial name="_StatusMessenger" model="@ViewData["Message"]"/>
+    <partial name="_StatusMessenger" model="@ViewData["Message"]" />
     <div class="card-body text-dark" style="background-color: #d3d4d4">
         <div class="table-responsive font-weight-bold">
             <table class="table table-bordered" id="dataTable">
@@ -30,7 +30,7 @@
                 {
                     <tr>
                         <td class="text-center">
-                            <img src="@order.Book.ImageUrl" class="card-img-top rounded" style="width: 30%" alt=""/>
+                            <img src="@order.Book.ImageUrl" class="card-img-top rounded" style="width: 50%" alt=""/>
                         </td>
                         <td>@order.Book.Title</td>
                         <td>@order.Book.Price</td>
