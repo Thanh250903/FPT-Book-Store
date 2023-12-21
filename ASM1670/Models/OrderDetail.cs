@@ -18,7 +18,7 @@ public class OrderDetail
    
     
     [ForeignKey("OrderId")]
-    public Order Order { get; set; }
+    public Orders Order { get; set; }
     [ForeignKey("BookId")]
     public Book Book { get; set; }
 }

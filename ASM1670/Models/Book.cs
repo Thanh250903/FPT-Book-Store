@@ -20,7 +20,8 @@ public class Book
     
     // [Required]
     public string ImageUrl { get; set; }
-    [Required]
+    [Range(1, int.MaxValue, ErrorMessage = "Quantity must be greater than 0")]
+    [Required(ErrorMessage = "Quantity is required")]
     public int Quantity { get; set; }
     [Required]
     public int CategoryId { get; set; }

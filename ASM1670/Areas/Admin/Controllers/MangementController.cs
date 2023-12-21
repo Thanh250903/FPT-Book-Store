@@ -1,5 +1,3 @@
-using System.Data;
-using System.Runtime.InteropServices;
 using System.Security.Claims;
 using ASM1670.Data;
 using ASM1670.Utility;
@@ -9,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASM1670.Controllers;
 
-[Area("Admin")]
+[Area(Constraintt.Admin)]
 [Authorize(Roles = Constraintt.OwnerRole + "," + Constraintt.UserRole)]
 
 public class ManagementController : Controller
@@ -37,7 +35,7 @@ public class ManagementController : Controller
         {
             // if user has "storeowner" role, display all orders
             var orderList = _db.Orders
-                .Include(o => o.User)
+                .Include(o => o.Users)
                 .ToList();
             
             return View(orderList);
@@ -47,7 +45,7 @@ public class ManagementController : Controller
             // if user has any other role, display only orders belonging to that user
             var orderList = _db.Orders
                 .Where(x => x.UserId == claims.Value)
-                .Include(o => o.User)
+                .Include(o => o.Users)
                 .ToList();
             
             return View(orderList);

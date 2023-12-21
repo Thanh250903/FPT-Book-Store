@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ASM1670.Models;
 
-public class Order
+public class Orders
 {
     [Key]
     public int Id { get; set; }
@@ -18,5 +18,5 @@ public class Order
    
     //link to User
     [ForeignKey("UserId")]
-    public User User { get; set; }
+    public User Users { get; set; }
 }

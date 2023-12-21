@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ASM1670.Models.ViewModels;
+namespace ASM1670.Models.VM;
 
 public class ResetPasswordVM
 {

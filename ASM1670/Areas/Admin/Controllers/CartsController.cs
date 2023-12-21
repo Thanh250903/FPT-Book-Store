@@ -1,8 +1,8 @@
 using System.Security.Claims;
 using ASM1670.Data;
+using ASM1670.Models.VM;
 using ASM1670.Models;
 using ASM1670.Utility;
-using ASM1670.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,13 +11,17 @@ namespace ASM1670.Controllers;
 
     [Area("Admin")]
     [Authorize(Roles = "User")]
-    public class CartsController(ApplicationDBContext db) : Controller
+    public class CartsController : Controller
     {
-        private readonly ApplicationDBContext _db = db;
+        private readonly ApplicationDBContext _db;
 
-    [BindProperty] public ShoppingCartVM ShoppingCartVm { get; set; }
+        public CartsController(ApplicationDBContext db)
+        {
+            _db = db;
+        }
+        
+        [BindProperty] public ShoppingCartVM ShoppingCartVm { get; set; }
 
-        // GET
         public IActionResult Index()
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -25,13 +29,13 @@ namespace ASM1670.Controllers;
 
             ShoppingCartVm = new ShoppingCartVM()
             {
-                Order = new Models.Order(),
+                Order = new Models.Orders(),
                 ListCarts = _db.Carts.Where(u => u.UserId == claim.Value)
                     .Include(p => p.Book.Category)
             };
 
             ShoppingCartVm.Order.Total = 0;
-            ShoppingCartVm.Order.User = _db.Users
+            ShoppingCartVm.Order.Users = _db.Users
                 .FirstOrDefault(u => u.Id == claim.Value);
 
 
@@ -48,7 +52,6 @@ namespace ASM1670.Controllers;
             return View(ShoppingCartVm);
         }
         
-        // Plus
         public IActionResult Plus(int cartId)
         {
             var cart = _db.Carts.Include(p => p.Book)
@@ -108,7 +111,6 @@ namespace ASM1670.Controllers;
             return RedirectToAction(nameof(Index));
         }
         
-        // summary
         [HttpGet]
         public IActionResult Summary()
         {
@@ -117,21 +119,21 @@ namespace ASM1670.Controllers;
 
             ShoppingCartVm = new ShoppingCartVM()
             {
-                Order = new Models.Order(),
+                Order = new Models.Orders(),
                 ListCarts = _db.Carts.Where(u => u.UserId == claim.Value)
                     .Include(c => c.Book)
             };
 
-            ShoppingCartVm.Order.User = _db.Users
+            ShoppingCartVm.Order.Users = _db.Users
                 .FirstOrDefault(u => u.Id == claim.Value);
 
             foreach (var list in ShoppingCartVm.ListCarts)
             {
                 list.Price = list.Book.Price;
-                ShoppingCartVm.Order.Total += (list.Price * list.Count);
+                ShoppingCartVm.Order.Total += (list.Price + list.Count);
             }
 
-            ShoppingCartVm.Order.Address = ShoppingCartVm.Order.User.HomeAddress;
+            ShoppingCartVm.Order.Address = ShoppingCartVm.Order.Users.HomeAddress;
             ShoppingCartVm.Order.Order_Date = DateTime.Now;
 
             return View(ShoppingCartVm);
@@ -149,7 +151,7 @@ namespace ASM1670.Controllers;
 
             // lay thong tin user dang mua
             // lay toan bo list cart
-            ShoppingCartVm.Order.User = _db.Users
+            ShoppingCartVm.Order.Users = _db.Users
                 .FirstOrDefault(c => c.Id == claim.Value);
             ShoppingCartVm.ListCarts = _db.Carts.Where(c => c.UserId== claim.Value)
                 .Include(c => c.Book);
@@ -157,7 +159,7 @@ namespace ASM1670.Controllers;
             
             // assign value for each field in order header
             ShoppingCartVm.Order.UserId = claim.Value;
-            ShoppingCartVm.Order.Address = ShoppingCartVm.Order.User.HomeAddress;
+            ShoppingCartVm.Order.Address = ShoppingCartVm.Order.Users.HomeAddress;
             ShoppingCartVm.Order.Order_Date = DateTime.Now;
 
             // add to order header and save changes to get order header id

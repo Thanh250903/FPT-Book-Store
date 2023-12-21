@@ -1,7 +1,6 @@
-@model IList<ASM1670.Models.Order>
+@model IList<ASM1670.Models.Orders>
 
 @{
-    // Layout = "_Layout1";
     ViewData["Title"] = "Order List";
 }
 
@@ -47,9 +46,9 @@
                     {
                         <tr>
                             <td>@order.Id</td>
-                            <td>@order.User.FullName</td>
-                            <td>@order.User.HomeAddress</td>
-                            <td>@order.User.Email</td>
+                            <td>@order.Users.FullName</td>
+                            <td>@order.Users.HomeAddress</td>
+                            <td>@order.Users.Email</td>
                             <td>@order.Order_Date</td>
                             <td>@order.Total</td>
                             <td>
