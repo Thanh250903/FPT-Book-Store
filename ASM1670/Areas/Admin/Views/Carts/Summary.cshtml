@@ -54,8 +54,7 @@
                         <p><b> Estimate Arrival Date: @DateTime.Now.ToShortDateString() - @DateTime.Now.AddDays(7).ToShortDateString()</b></p>
                     </div>
                     <div class="d-flex justify-content-between mt-3">
-                        <label><b>Address:</b></label>
-                        <input asp-for="Order.Address" type="text" />
+                        <input asp-for="Order.Address" type="text" hidden/>
                         <span asp-validation-for="Order.Address"></span>
                     </div>
                 </div>
