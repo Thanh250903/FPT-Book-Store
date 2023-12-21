@@ -1,23 +1,24 @@
-﻿@model Category
-<h1>Create a category</h1>
-<form method="post">
-    <div class="border p-3 mt-4">
-        <div class="mb-3 row">
-            <label asp-for="Name"></label>
-            <input asp-for="Name">
+@model ASM1670.Models.Category
+
+
+<div class="book-container">
+    <div class="book-detail-header">
+        <h1>Create</h1>
+    </div>
+    <form asp-action="Create">
+        <div class="form-group" style="padding: 3px 20px">
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" class="form-control" />
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
-        <div class="mb-3 row">
-            <label asp-for="Description"></label>
-            <input asp-for="Description">
+        <div class="form-group" style="padding: 3px 20px">
+            <label asp-for="Description" class="control-label"></label>
+            <input asp-for="Description" class="form-control" />
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
-        <button type="submit" class="btn btn-primary">Create</button>
-        <a asp-controller="Category" asp-action="Index" class="btn btn-primary">Back to List</a>
-    </div>
-</form>
-@section Scripts {
-    @{
-        <partial name="_ValidationScriptsPartial" />
-    }
-}
+        <div class="form-group" style="padding: 5px 20px">
+            <a asp-action="Index" class="btn btn-primary">Back to List</a>
+            <input  onclick="return confirm('Ask Admin for approve new Category?')" type="submit" value="Create" class="btn btn-primary" style="background: #007a33"/>
+        </div>
+    </form>
+</div>

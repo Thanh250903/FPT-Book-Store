@@ -4,55 +4,56 @@
     // Layout = "_Layout1";
     var title = Model.Book.Id != 0 ? "Update Book" : "Add Book";
 }
-<div class="book-container">
-    <div class="summary-header" style="text-align: center;">
-        <h2>@title</h2>
-    </div>
-    <div class="book-container-table">
+<div class="">
+
         <form method="post" asp-controller="Book" asp-action="Upsert" enctype="multipart/form-data">
-            <input asp-for="Book.Id" class="form-control" hidden>
-            <div class="row justify-content-center">
-                <img src="@Model.Book.ImageUrl" width="20%" style="border-radius: 5px" border: solid green alt=""/>
+        <div class="summary-header" style="text-align: left;">
+            <h2>@title </h2>
+        </div>
+            <div class="p-3 mt-4 ">
+                <div class="row">
+                <div class="col-10">
+                        <input asp-for="Book.Id" hidden />
+                        <input asp-for="Book.ImageUrl" hidden />
+                        <div class="mb-3 row">
+                            <label asp-for="Book.Title"></label>
+                            <input asp-for="Book.Title">
+                            <span asp-validation-for="Book.Title" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3 row">
+                            <label asp-for="Book.Description"></label>
+                            <input asp-for="Book.Description">
+                            <span asp-validation-for="Book.Description" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3 row">
+                            <label asp-for="Book.Author"></label>
+                            <input asp-for="Book.Author">
+                            <span asp-validation-for="Book.Author" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3 row">
+                            <label asp-for="Book.Price" ></label>
+                            <input type="number" asp-for="Book.Price">
+                            <span asp-validation-for="Book.Price" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3 row">
+                            <label asp-for="Book.CategoryId"></label>
+                            <select asp-for="Book.CategoryId" asp-items="@Model.Categories"></select>
+                            <span asp-validation-for="Book.CategoryId" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3 row">
+                            <label>Image</label>
+                            <input type="file" name="file" multiple class="form-control" value="@Model.Book.ImageUrl">
+                            <span asp-validation-for="Book.ImageUrl" class="text-danger"></span>
+
+                        </div>
+                            <button type="submit" class="btn btn-success">Save</button>
+                    <a asp-action="Index" class="btn btn-success">Back To List</a>
+                    </div>
+                <div class="col-2">
+                    <img src="@Model.Book.ImageUrl" width="100%" />
+                </div>
+                </div>
             </div>
-            <div class="mb-3">
-                <label asp-for="Book.Title" class="form-label"></label>
-                <input asp-for="Book.Title" class="form-control">
-                <span asp-validation-for="Book.Title" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Book.Description" class="form-label"></label>
-                <input asp-for="Book.Description" class="form-control">
-                <span asp-validation-for="Book.Description" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Book.Price" class="form-label"></label>
-                <input type="number" asp-for="Book.Price" class="form-control">
-                <span asp-validation-for="Book.Price" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Book.Author" class="form-label"></label>
-                <input asp-for="Book.Author" class="form-control">
-                <span asp-validation-for="Book.Author" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Book.NuPages" class="form-label"></label>
-                <input type="number" asp-for="Book.NuPages" class="form-control">
-                <span asp-validation-for="Book.NuPages" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Book.CategoryId" class="form-label"></label>
-                @Html.DropDownListFor(b => b.Book.CategoryId, Model.Categories,
-                    " - select categories", new { @class = "form-control" })
-                <span asp-validation-for="Book.CategoryId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label style="padding: 10px 0;">Image</label>
-                <input type="file" name="file" multiple class="form-control" value="@Model.Book.ImageUrl">
-                <span asp-validation-for="Book.ImageUrl" class="text-danger"></span>
-            </div>
-            <div class="btn-detail">
-                <button type="submit">Save</button>
-            </div>
+
         </form>
-    </div>
 </div>
