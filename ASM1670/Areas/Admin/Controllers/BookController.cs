@@ -1,6 +1,5 @@
 ﻿using ASM1670.Models;
 using ASM1670.Data;
-using ASM1670.Repository.IRepository;
 using ASM1670.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -46,7 +45,7 @@ namespace ASM1670.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
         [HttpGet]
-        public IActionResult Upsert(int? id)
+        public IActionResult CreateUpdate(int? id)
         {
             var bookVm = new BookVM();
 
@@ -63,7 +62,7 @@ namespace ASM1670.Areas.Admin.Controllers
             return View(bookVm);
         }
         [HttpPost]
-        public IActionResult Upsert(BookVM bookVm)
+        public IActionResult CreateUpdate(BookVM bookVm)
         {
             if (ModelState.IsValid)
             {

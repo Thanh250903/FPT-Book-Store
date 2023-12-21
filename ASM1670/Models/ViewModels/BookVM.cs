@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using ASM1670.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace ASM1670.Models.ViewModels
+namespace ASM1670.Models.ViewModels;
+
+public class BookVM
 {
-    public class BookVM
-    {
-        public Book Book { get; set; }
-        public IEnumerable<SelectListItem> Categories { get; set; }
-    }
+    public Book Book { get; set; }
+    public IEnumerable<SelectListItem> Categories { get; set; }
 }

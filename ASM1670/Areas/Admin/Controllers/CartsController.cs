@@ -1,8 +1,8 @@
 using System.Security.Claims;
 using ASM1670.Data;
-using ASM1670.Models.ViewModels;
 using ASM1670.Models;
 using ASM1670.Utility;
+using ASM1670.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,17 +11,13 @@ namespace ASM1670.Controllers;
 
     [Area("Admin")]
     [Authorize(Roles = "User")]
-    public class CartsController : Controller
+    public class CartsController(ApplicationDBContext db) : Controller
     {
-        private readonly ApplicationDBContext _db;
+        private readonly ApplicationDBContext _db = db;
 
-        public CartsController(ApplicationDBContext db)
-        {
-            _db = db;
-        }
-        
-        [BindProperty] public ShoppingCartVM ShoppingCartVm { get; set; }
+    [BindProperty] public ShoppingCartVM ShoppingCartVm { get; set; }
 
+        // GET
         public IActionResult Index()
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -52,6 +48,7 @@ namespace ASM1670.Controllers;
             return View(ShoppingCartVm);
         }
         
+        // Plus
         public IActionResult Plus(int cartId)
         {
             var cart = _db.Carts.Include(p => p.Book)
@@ -111,6 +108,7 @@ namespace ASM1670.Controllers;
             return RedirectToAction(nameof(Index));
         }
         
+        // summary
         [HttpGet]
         public IActionResult Summary()
         {
@@ -130,7 +128,7 @@ namespace ASM1670.Controllers;
             foreach (var list in ShoppingCartVm.ListCarts)
             {
                 list.Price = list.Book.Price;
-                ShoppingCartVm.Order.Total += (list.Price + list.Count);
+                ShoppingCartVm.Order.Total += (list.Price * list.Count);
             }
 
             ShoppingCartVm.Order.Address = ShoppingCartVm.Order.User.HomeAddress;
@@ -179,7 +177,7 @@ namespace ASM1670.Controllers;
                 };
 
                 // calculate total for order header and add to order detail
-                ShoppingCartVm.Order.Total += orderDetail.Quantity + orderDetail.Price;
+                ShoppingCartVm.Order.Total += orderDetail.Quantity * orderDetail.Price;
                 _db.OrderDetails.Add(orderDetail);
             }
             
