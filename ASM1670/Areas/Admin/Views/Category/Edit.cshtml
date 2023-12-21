@@ -12,11 +12,6 @@
             <input asp-for="Description">
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
-        <div class="mb-3 row">
-            <label asp-for="DisplayOrder"></label>
-            <input asp-for="DisplayOrder">
-            <span asp-validation-for="DisplayOrder" class="text-danger"></span>
-        </div>
         <button type="submit" class="btn btn-primary">Update</button>
         <a asp-controller="Category" asp-action="Index" class="btn btn-primary">Back to List</a>
     </div>

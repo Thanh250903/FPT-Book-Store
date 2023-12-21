@@ -1,34 +1,84 @@
-﻿@model List<Book>
-<partial name="_Notification" />
+@model IEnumerable<Book>
 
-<!-- Section-->
-<section class="py-5">
-    <div class="container px-4 px-lg-5 mt-5">
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center ">
-            @foreach (var Book in Model)
-            {
-                <form>
-                    <div class="card" style="width: 16rem;">
-                        <img class="card-img-top" src="@Book.ImageUrl" alt="@Book.Title" width="600px" height="400px" />
-                        <div class="card-body text-center">
-                            <h5 class="card-title">@Book.Title</h5>
-                            <p class="card-text" style="text-overflow: ellipsis;overflow: hidden;-webkit-line-clamp: 3;-webkit-box-orient: vertical; display: -webkit-box;">@Book.Description</p>
-                            <p class ="card-text">@Book.Category.Name</p>
-                            <p class="card-text">@Book.Price VND</p>
-                            <a class="btn btn-primary" asp-controller="Book" asp-action="Detail"asp-route-id="@Book.Id" >Details</a>
-                            <a asp-controller="Book" asp-action="CreateUpdate" asp-route-id="@Book.Id" class="btn btn-primary">Edit</a>
-                            <a asp-controller="Book" asp-action="Delete" asp-route-id="@Book.Id" class="btn btn-primary">Delete</a>
-                        </div>
-                    </div>
-                </form>
-            }
-        </div>
+@if(TempData["DeleteBoMessage"] != null && (bool)TempData["ShowMessage"]){
+    <div id="deleteBoMessage" class="alert alert-danger">@TempData["DeleteBoMessage"]</div>
+    <script>
+        setTimeout(function() {
+            $("#deleteBoMessage").fadeOut("slow");
+        }, 5000);
+    </script>
+}else if (TempData["CreateBoMessage"] != null && (bool)TempData["ShowMessage"])
+{
+    <div id="createBoMessage" class="alert alert-success">@TempData["CreateBoMessage"]</div>
+    <script>
+        setTimeout(function() {
+            $("#createBoMessage").fadeOut("slow");
+        }, 3000);
+    </script>
+}
+<div class="book-container">
+    <div class="book-container-header">
+        <ion-icon name="book-outline"></ion-icon><h1>Book</h1>
     </div>
-</section>
-<div>
-    <a class="btn btn-primary me-md-2 position-relative top-0 bottom-0" asp-action="CreateUpdate">Create</a>
+    <div class="book-container-search">
+        <form>
+            <label for="myInput"><ion-icon name="search-circle-outline"></ion-icon></label>
+            <input id="myInput" type="text" placeholder="Search" >
+        </form>
+         <a asp-controller="Books" asp-action="Upsert">
+            <ion-icon name="add-circle-outline" style="color: #0f6b30; font-size: 2em; margin-top: 4px; font-weight: 600;"></ion-icon>
+        </a>
+    </div>
+    <div class="book-container-table">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Price</th>
+                <th scope="col">Category</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody id="tblData">
+            @foreach (var obj in Model)
+            {
+                <tr>
+                    <th scope="row">@obj.Id</th>
+                    <td>@obj.Title</td>
+                    <td>@obj.Description</td>
+                    <td>@obj.Price</td>
+                    <td>@obj.Category.Name</td>
+                    <td class="btn-book">
+                        <a asp-controller="Book" 
+                        asp-action="Upsert" asp-route-id="@obj.Id" style="background: #24ed3b;">
+                            Update
+                        </a>
+                        <a asp-controller="Book" asp-action="Delete"
+                        onclick="return confirm('Are you sure to delete this Book')"
+                        asp-route-id="@obj.Id" style="background: #a70505;">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
 </div>
-<!-- Bootstrap core JS-->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Core theme JS-->
-<script src="js/scripts.js"></script>
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function(){
+            $("#myInput").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                
+                $("#tblData tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}
