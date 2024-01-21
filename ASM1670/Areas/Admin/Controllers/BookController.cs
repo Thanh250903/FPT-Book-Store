@@ -10,22 +10,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASM1670.Controllers;
 
-[Area(Constraintt.Admin)]
-[Authorize(Roles = Constraintt.OwnerRole)]
+[Area("Admin")]
+[Authorize(Roles = "Owner")]
 
-public class BooksController : Controller
+public class BookController : Controller
 {
     private readonly ApplicationDBContext _context;
     private readonly IWebHostEnvironment _environment;
 
-    public BooksController(ApplicationDBContext context,  IWebHostEnvironment environment)
+    public BookController(ApplicationDBContext context,  IWebHostEnvironment environment)
     {
         _context = context;
         _environment = environment;
     }
     
      // GET
-        // --------------------INDEX-------------------
+        // Index
         [HttpGet]
         public IActionResult Index()
         {
@@ -39,7 +39,7 @@ public class BooksController : Controller
                 .Include(x => x.Category).ToList();
             return View(books);
         }
-        // -------------------DELETE--------------------
+        // Delete
         [HttpGet]
         public IActionResult Delete(int id)
         {
@@ -51,7 +51,7 @@ public class BooksController : Controller
             TempData["ShowMessage"] = true; //Set flag to show message in the view
             return RedirectToAction(nameof(Index));
         }
-    // -------------------CreateUpdate----------------------
+    // CreateUpdate
     [HttpGet]
         public IActionResult CreateUpdate(int? id)
         {
@@ -135,9 +135,6 @@ public class BooksController : Controller
             TempData["ShowMessage"] = true; //Set flag to show message in the view
             return RedirectToAction(nameof(Index));
 
-            // provide data for the categories list
-            // bookVm.;Categories = CategorySelectListItems();
-
         }
 
         // method for category select list VM
@@ -156,62 +153,5 @@ public class BooksController : Controller
             });
 
             return result;
-        }
-
-        // // Upload Book
-        // public IActionResult UploadExcel(IFormFile file)
-        // {
-        //     if (file == null)
-        //     {
-        //         return RedirectToAction(nameof(Index));
-        //     }
-        //
-        //     var path = Path.Combine(_environment.WebRootPath, "uploads");
-        //     if (!Directory.Exists(path))
-        //     {
-        //         Directory.CreateDirectory(path);
-        //     }
-        //
-        //     string fileName = Path.GetFileName(file.FileName);
-        //     string filePath = Path.Combine(path, fileName);
-        //
-        //     using (FileStream stream = new FileStream(filePath, FileMode.Create))
-        //     {
-        //         file.CopyTo(stream);
-        //     }
-        //
-        //     using var streamFile = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read);
-        //     using var reader = ExcelReaderFactory.CreateReader(streamFile);
-        //     
-        //     
-        //     while (reader.Read())
-        //     {
-        //         var category = _context.Categories.FirstOrDefault(c => c.Name == reader.GetValue(3).ToString());
-        //         if (category == null)
-        //         { 
-        //             continue;
-        //         }
-        //         
-        //         var book = new Book()
-        //         {
-        //             Title = reader.GetValue(0).ToString(),
-        //             Description = reader.GetValue(1).ToString(),
-        //             Price = Convert.ToDouble(reader.GetValue(2).ToString()),
-        //             CategoryId = category.Id,
-        //             Author = reader.GetValue(4).ToString(),
-        //             NuPages = Convert.ToInt32(reader.GetValue(5).ToString()),
-        //             ImgUrl = reader.GetValue(6).ToString(),
-        //         };
-        //
-        //         _context.Books.Add(book);
-        //     }
-        //
-        //     _context.SaveChanges();
-        //     return RedirectToAction(nameof(Index));
-        //
-        // }
-    
-    
-    
-        
+        }       
 }

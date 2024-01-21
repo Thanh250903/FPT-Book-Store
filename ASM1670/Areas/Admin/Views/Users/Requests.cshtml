@@ -43,8 +43,8 @@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td class="request-accept">
-                    <a asp-area="Admin" asp-controller="User" asp-action="ApproveRequest" asp-route-id="@item.Id" style="color: #00800d">Approve</a> |
-                    <a asp-area="Admin" asp-controller="User" asp-action="RejectRequest" asp-route-id="@item.Id" style="color: #800000">Reject</a>
+                    <a asp-area="Admin" asp-controller="Users" asp-action="ApproveRequest" asp-route-id="@item.Id" style="color: #00800d">Approve</a> |
+                    <a asp-area="Admin" asp-controller="Users" asp-action="RejectRequest" asp-route-id="@item.Id" style="color: #800000">Reject</a>
                 </td>
             </tr>
         }

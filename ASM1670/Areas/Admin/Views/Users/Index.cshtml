@@ -62,17 +62,17 @@
                 <td>@obj.PhoneNumber</td>
                 <td>@obj.CreatedAt</td>
                 <td>
-                    <a class="btn btn-primary" asp-controller="User" asp-action="Edit" asp-route-id="@obj.Id"
+                    <a class="btn btn-primary" asp-controller="Users" asp-action="Edit" asp-route-id="@obj.Id"
                        class="btn btn-sm btn-outline-info">
                         <b class="fa-solid fa-pen">Edit</b>
                     </a>
                     @if (User.IsInRole("Admin"))
                     {
-                                <a class="btn btn-secondary" asp-area="Admin" asp-controller="User" asp-action="ResetPassword" asp-route-id="@obj.Id"
+                                <a class="btn btn-secondary" asp-area="Admin" asp-controller="Users" asp-action="ResetPassword" asp-route-id="@obj.Id"
                                    class="btn btn-sm btn-outline-danger">
                                     <b class="fa-solid fa-trash">Reset Password</b>
                                 </a>
-                        <a class="btn btn-danger" asp-area="Admin" asp-controller="User" asp-action="Delete"
+                        <a class="btn btn-danger" asp-area="Admin" asp-controller="Users" asp-action="Delete"
                            onclick="return confirm('Do you want to delete')" asp-route-id="@obj.Id"
                            class="btn btn-sm btn-outline-danger">
                             <b class="fa-solid fa-trash">Delete</b>

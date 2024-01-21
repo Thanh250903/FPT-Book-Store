@@ -47,21 +47,17 @@
     <None Include="Areas\Admin\Views\Category\Index.cshtml" />
     <None Include="Areas\Admin\Views\Management\Detail.cshtml" />
     <None Include="Areas\Admin\Views\Management\Index.cshtml" />
-    <None Include="Areas\Admin\Views\User\ConfirmEmail.cshtml" />
-    <None Include="Areas\Admin\Views\User\EditUser.cshtml" />
-    <None Include="Areas\Admin\Views\User\Index.cshtml" />
-    <None Include="Areas\Admin\Views\User\Requests.cshtml" />
-    <None Include="Areas\Admin\Views\User\ResetPassword.cshtml" />
+    <None Include="Areas\Admin\Views\Users\ConfirmEmail.cshtml" />
+    <None Include="Areas\Admin\Views\Users\EditUser.cshtml" />
+    <None Include="Areas\Admin\Views\Users\Index.cshtml" />
+    <None Include="Areas\Admin\Views\Users\Requests.cshtml" />
+    <None Include="Areas\Admin\Views\Users\ResetPassword.cshtml" />
     <None Include="Areas\Customer\Views\Home\Details.cshtml" />
     <None Include="Areas\Customer\Views\Home\HelpScreen.cshtml" />
     <None Include="Areas\Customer\Views\Home\Index.cshtml" />
     <None Include="Areas\Customer\Views\Home\Privacy.cshtml" />
     <None Include="wwwroot\vendor\jquery\jquery-ui.min.js" />
     <None Include="wwwroot\vendor\jquery\jquery.min.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\images\books\" />
   </ItemGroup>
 
 </Project>

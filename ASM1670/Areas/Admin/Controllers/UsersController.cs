@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASM1670.Controllers;
 
-    [Area(Constraintt.Admin)]
-    [Authorize(Roles = Constraintt.AdminRole)]
+    [Area("Admin")]
+    [Authorize(Roles = "Admin")]
 
     public class UsersController : Controller
     {
@@ -48,31 +48,7 @@ namespace ASM1670.Controllers;
             return View(userList.ToList());
         }
         
-
-
-        // lock and unlock
-        [HttpGet]
-        public async Task<IActionResult> LockUnlock(string id)
-        {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-
-            var userNeedToLock = _db.Users.Where(u => u.Id == id).First();
-
-            if (userNeedToLock.Id == claims.Value)
-            {
-                // hien ra loi ban dang khoa tai khoan cua chinh minh
-            }
-
-            if (userNeedToLock.LockoutEnd != null && userNeedToLock.LockoutEnd > DateTime.Now)
-                userNeedToLock.LockoutEnd = DateTime.Now;
-            else
-                userNeedToLock.LockoutEnd = DateTime.Now.AddYears(1000);
-            _db.SaveChanges();
-
-            return RedirectToAction(nameof(Index));
-        }
-        
+   
         [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
